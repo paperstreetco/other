@@ -1,0 +1,30 @@
+#DockerCompose File For Deployment of Jellyfin
+
+version: "3"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports: 
+      #external port 7700
+      - 7700:8096
+    volumes:
+      - ./config:/config
+      - ./jellyfin/cache:/cache
+      - /home/jellyfish/media:/media:ro
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1024M
+    networks:
+      jelly-net:
+networks:
+  jelly-net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: 172.18.0.1  
